@@ -1,19 +1,20 @@
+// db.js
 import mysql from "mysql2";
 
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT || 3306
+  host: process.env.MYSQLHOST || "localhost",
+  user: process.env.MYSQLUSER || "root",
+  password: process.env.MYSQLPASSWORD || "",
+  database: process.env.MYSQLDATABASE || "turnero_realtime",
+  port: process.env.MYSQLPORT || 3306,
 });
 
 db.connect((err) => {
   if (err) {
     console.error("❌ Error al conectar con la base de datos:", err);
-  } else {
-    console.log("✅ Conectado correctamente a la base de datos MySQL");
+    return;
   }
+  console.log("✅ Conectado a la base de datos MySQL");
 });
 
 export default db;
