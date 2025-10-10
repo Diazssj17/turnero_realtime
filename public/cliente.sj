@@ -1,15 +1,14 @@
-const form = document.getElementById("formRegistro");
-const mensaje = document.getElementById("mensaje");
-
-// ⚠️ Usa la URL base de Railway cuando despliegues
 const API_URL = window.location.origin;
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
+document.getElementById("btnRegistrar").addEventListener("click", async () => {
   const nombre = document.getElementById("nombre").value;
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
+
+  if (!nombre || !email || !password) {
+    alert("⚠️ Todos los campos son obligatorios");
+    return;
+  }
 
   try {
     const res = await fetch(`${API_URL}/registro`, {
@@ -19,17 +18,9 @@ form.addEventListener("submit", async (e) => {
     });
 
     const data = await res.json();
-    if (res.ok) {
-      mensaje.textContent = "✅ " + data.message;
-      mensaje.style.color = "green";
-    } else {
-      mensaje.textContent = "❌ " + data.error;
-      mensaje.style.color = "red";
-    }
+    alert(data.message || data.error);
   } catch (error) {
-    mensaje.textContent = "❌ Error al conectar con el servidor";
-    mensaje.style.color = "red";
-    console.error(error);
+    alert("❌ Error al registrar usuario");
   }
 });
 
