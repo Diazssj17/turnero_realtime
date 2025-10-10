@@ -2,33 +2,88 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Panel de Administración</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+      text-align: center;
+      margin-top: 50px;
+    }
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 80%;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background: #4CAF50;
+      color: white;
+    }
+    tr:hover { background: #f1f1f1; }
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    button:hover {
+      background: #45a049;
+    }
+  </style>
 </head>
 <body>
-  <h1>Panel de Administración</h1>
-  <button onclick="cargarRegistros()">Actualizar</button>
-  <table border="1">
+  <h2>📋 Panel de Administración</h2>
+  <button onclick="cargarRegistros()">🔄 Actualizar Lista</button>
+  <table>
     <thead>
-      <tr><th>Nombre</th><th>Cédula</th><th>Fecha</th></tr>
+      <tr>
+        <th>Nombre</th>
+        <th>Cédula</th>
+        <th>Hora</th>
+      </tr>
     </thead>
-    <tbody id="tabla"></tbody>
+    <tbody id="tablaRegistros">
+      <tr><td colspan="3">Cargando registros...</td></tr>
+    </tbody>
   </table>
 
   <script>
     async function cargarRegistros() {
-      const res = await fetch("/api/registros");
+      const res = await fetch("/registros");
       const registros = await res.json();
-      const tabla = document.getElementById("tabla");
-      tabla.innerHTML = "";
+      const tbody = document.getElementById("tablaRegistros");
+      tbody.innerHTML = "";
+
+      if (registros.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='3'>No hay registros aún.</td></tr>";
+        return;
+      }
+
       registros.forEach(r => {
-        const fila = `<tr><td>${r.nombre}</td><td>${r.cedula}</td><td>${new Date(r.fecha).toLocaleString()}</td></tr>`;
-        tabla.innerHTML += fila;
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${r.nombre}</td>
+          <td>${r.cedula}</td>
+          <td>${r.hora}</td>
+        `;
+        tbody.appendChild(tr);
       });
     }
 
     cargarRegistros();
+    setInterval(cargarRegistros, 5000); // 🔄 refresca cada 5 segundos
   </script>
 </body>
 </html>
-
-
