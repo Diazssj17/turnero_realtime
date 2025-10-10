@@ -1,46 +1,76 @@
+// server.js
 import express from "express";
-import bodyParser from "body-parser";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
+const app = express();
+app.use(express.json());
+app.use(express.static("public")); // donde estarán cliente.html y admin.html
+
+// Rutas de archivos
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const dataDir = path.join(__dirname, "data");
+const dataFile = path.join(dataDir, "registros.json");
 
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, "public")));
-
-const dataPath = path.join(__dirname, "data", "registros.json");
-
-// Asegurar que el archivo exista
-if (!fs.existsSync(dataPath)) {
-  fs.writeFileSync(dataPath, "[]");
+// Crear carpeta y archivo si no existen
+if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
+if (!fs.existsSync(dataFile)) {
+  fs.writeFileSync(dataFile, "[]", "utf-8");
+  console.log("🆕 Archivo registros.json creado automáticamente.");
 }
 
-// Guardar nuevo registro
-app.post("/api/registrar", (req, res) => {
+// Leer registros
+function leerRegistros() {
+  try {
+    const data = fs.readFileSync(dataFile, "utf-8");
+    return JSON.parse(data);
+  } catch (error) {
+    console.error("❌ Error al leer registros:", error);
+    return [];
+  }
+}
+
+// Guardar registros
+function guardarRegistros(registros) {
+  try {
+    fs.writeFileSync(dataFile, JSON.stringify(registros, null, 2));
+  } catch (error) {
+    console.error("❌ Error al guardar registros:", error);
+  }
+}
+
+// ✅ Ruta principal
+app.get("/", (req, res) => {
+  res.send("🚀 Servidor activo y en funcionamiento");
+});
+
+// 📩 Ruta para cliente (registro)
+app.post("/registro", (req, res) => {
   const { nombre, cedula } = req.body;
+
   if (!nombre || !cedula) {
     return res.status(400).json({ error: "Faltan datos" });
   }
 
-  const registros = JSON.parse(fs.readFileSync(dataPath, "utf8"));
-  registros.push({ nombre, cedula, fecha: new Date().toISOString() });
-  fs.writeFileSync(dataPath, JSON.stringify(registros, null, 2));
+  const registros = leerRegistros();
+  registros.push({ nombre, cedula, hora: new Date().toLocaleString() });
+  guardarRegistros(registros);
 
-  res.json({ mensaje: "Registro guardado" });
+  console.log(`🟢 Nuevo registro: ${nombre} (${cedula})`);
+  res.json({ message: "✅ Registro guardado correctamente" });
 });
 
-// Mostrar todos los registros
-app.get("/api/registros", (req, res) => {
-  const registros = JSON.parse(fs.readFileSync(dataPath, "utf8"));
+// 📤 Ruta para admin (ver todos los registros)
+app.get("/registros", (req, res) => {
+  const registros = leerRegistros();
   res.json(registros);
 });
 
+// 🚀 Iniciar servidor
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ Servidor activo en puerto ${PORT}`);
+  console.log(`✅ Servidor ejecutándose en puerto ${PORT}`);
 });
 
