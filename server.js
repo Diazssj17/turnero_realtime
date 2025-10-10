@@ -5,10 +5,10 @@ import db from "./db.js";
 const app = express();
 app.use(express.json());
 
-// Ruta de prueba
+// ✅ Ruta de prueba
 app.get("/", (req, res) => res.send("Servidor activo 🚀"));
 
-// Registro
+// ✅ Registro de usuario
 app.post("/registro", (req, res) => {
   const { nombre, email, password } = req.body;
 
@@ -26,4 +26,9 @@ app.post("/registro", (req, res) => {
   });
 });
 
-app.listen(3000, () => console.log("🚀 Servidor ejecutándose en puerto 3000"));
+// ✅ Escuchar en el puerto asignado por Railway
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor ejecutándose en puerto ${PORT}`);
+});
+
