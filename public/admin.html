@@ -1,34 +1,29 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Panel Admin - Turnero</title>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="admin.js" defer></script>
-  <style>
-    body { font-family: Arial; margin: 20px; }
-    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-    th { background: #f0f0f0; }
-    .atendido { background: #e0ffe0; }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel de Administración</title>
 </head>
 <body>
-  <h1>Panel del Administrador</h1>
-  <p>Turnos en tiempo real:</p>
-  <table id="tablaTurnos">
+  <h1>👨‍💼 Panel de Administración</h1>
+
+  <button id="btnCargar">Cargar usuarios</button>
+
+  <table border="1" style="margin-top: 20px;">
     <thead>
       <tr>
         <th>ID</th>
-        <th># Turno</th>
         <th>Nombre</th>
-        <th>Cédula</th>
-        <th>Hora</th>
-        <th>Atendido</th>
-        <th>Acciones</th>
+        <th>Email</th>
       </tr>
     </thead>
-    <tbody></tbody>
+    <tbody id="tablaUsuarios"></tbody>
   </table>
+
+  <p id="mensaje"></p>
+
+  <script src="js/admin.js"></script>
 </body>
 </html>
+
