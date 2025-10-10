@@ -1,72 +1,46 @@
 import express from "express";
-import db from "./db.js";
+import bodyParser from "body-parser";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-app.use(express.json());
+const PORT = process.env.PORT || 3000;
 
-// ✅ Servir archivos del frontend
-app.use(express.static("public"));
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, "public")));
 
-// ✅ Ruta de prueba
-app.get("/", (req, res) => res.send("Servidor activo 🚀"));
+const dataPath = path.join(__dirname, "data", "registros.json");
 
-// ✅ Registro
-app.post("/registro", (req, res) => {
-  const { nombre, email, password } = req.body;
+// Asegurar que el archivo exista
+if (!fs.existsSync(dataPath)) {
+  fs.writeFileSync(dataPath, "[]");
+}
 
-  if (!nombre || !email || !password) {
+// Guardar nuevo registro
+app.post("/api/registrar", (req, res) => {
+  const { nombre, cedula } = req.body;
+  if (!nombre || !cedula) {
     return res.status(400).json({ error: "Faltan datos" });
   }
 
-  const sql = "INSERT INTO usuarios (nombre, email, password) VALUES (?, ?, ?)";
-  db.query(sql, [nombre, email, password], (err, result) => {
-    if (err) {
-      console.error("❌ Error en /registro:", err);
-      return res.status(500).json({ error: "Error al registrar usuario" });
-    }
-    res.json({ message: "✅ Usuario registrado correctamente" });
-  });
-  // Obtener lista de usuarios (solo para admin)
-app.get("/usuarios", (req, res) => {
-  const sql = "SELECT id, nombre, email FROM usuarios";
-  db.query(sql, (err, result) => {
-    if (err) {
-      console.error("❌ Error en /usuarios:", err);
-      return res.status(500).json({ error: "Error al obtener usuarios" });
-    }
-    res.json(result);
-  });
-  // Listar usuarios
-app.get("/usuarios", (req, res) => {
-  const sql = "SELECT id, nombre, email FROM usuarios";
-  db.query(sql, (err, result) => {
-    if (err) {
-      console.error("❌ Error al obtener usuarios:", err);
-      return res.status(500).json({ error: "Error al obtener usuarios" });
-    }
-    res.json(result);
-  });
+  const registros = JSON.parse(fs.readFileSync(dataPath, "utf8"));
+  registros.push({ nombre, cedula, fecha: new Date().toISOString() });
+  fs.writeFileSync(dataPath, JSON.stringify(registros, null, 2));
+
+  res.json({ mensaje: "Registro guardado" });
 });
 
+// Mostrar todos los registros
+app.get("/api/registros", (req, res) => {
+  const registros = JSON.parse(fs.readFileSync(dataPath, "utf8"));
+  res.json(registros);
 });
 
-});
-
-// ✅ Puerto dinámico
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor ejecutándose en puerto ${PORT}`);
+  console.log(`✅ Servidor activo en puerto ${PORT}`);
 });
-// Listar usuarios para el panel admin
-app.get("/usuarios", (req, res) => {
-  const sql = "SELECT id, nombre, email FROM usuarios";
-  db.query(sql, (err, result) => {
-    if (err) {
-      console.error("❌ Error al obtener usuarios:", err);
-      return res.status(500).json({ error: "Error al obtener usuarios" });
-    }
-    res.json(result);
-  });
-});
-
 
