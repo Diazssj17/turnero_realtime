@@ -2,28 +2,33 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Panel de Administración</title>
 </head>
 <body>
-  <h1>👨‍💼 Panel de Administración</h1>
-
-  <button id="btnCargar">Cargar usuarios</button>
-
-  <table border="1" style="margin-top: 20px;">
+  <h1>Panel de Administración</h1>
+  <button onclick="cargarRegistros()">Actualizar</button>
+  <table border="1">
     <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Email</th>
-      </tr>
+      <tr><th>Nombre</th><th>Cédula</th><th>Fecha</th></tr>
     </thead>
-    <tbody id="tablaUsuarios"></tbody>
+    <tbody id="tabla"></tbody>
   </table>
 
-  <p id="mensaje"></p>
+  <script>
+    async function cargarRegistros() {
+      const res = await fetch("/api/registros");
+      const registros = await res.json();
+      const tabla = document.getElementById("tabla");
+      tabla.innerHTML = "";
+      registros.forEach(r => {
+        const fila = `<tr><td>${r.nombre}</td><td>${r.cedula}</td><td>${new Date(r.fecha).toLocaleString()}</td></tr>`;
+        tabla.innerHTML += fila;
+      });
+    }
 
-  <script src="js/admin.js"></script>
+    cargarRegistros();
+  </script>
 </body>
 </html>
+
 
