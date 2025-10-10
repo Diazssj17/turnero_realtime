@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Turnero - Cliente</title>
+</head>
+<body>
+  <h1>Turnero - Registro</h1>
+  <form id="registroForm">
+    <label>Nombre: <input id="nombre" required></label><br><br>
+    <label>Cédula: <input id="cedula" required></label><br><br>
+    <button type="submit">Pedir Turno</button>
+  </form>
+
+  <h2>Turnos recientes</h2>
+  <ul id="lista"></ul>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="Script.js"></script>
+</body>
+</html>
