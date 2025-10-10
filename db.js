@@ -1,12 +1,13 @@
 // db.js
+// db.js
 import mysql from "mysql2";
 
 const db = mysql.createConnection({
-  host: process.env.MYSQLHOST || "localhost",
-  user: process.env.MYSQLUSER || "root",
-  password: process.env.MYSQLPASSWORD || "",
-  database: process.env.MYSQLDATABASE || "turnero_realtime",
-  port: process.env.MYSQLPORT || 3306,
+  host: process.env.MYSQLHOST || process.env.HOST || "mysql.railway.internal",
+  user: process.env.MYSQLUSER || process.env.USER || "root",
+  password: process.env.MYSQLPASSWORD || process.env.PASSWORD || "JogTRBVozjGbMnPNOSxkBQbWjSpySKld",
+  database: process.env.MYSQLDATABASE || process.env.DATABASE || "railway",
+  port: process.env.MYSQLPORT || process.env.PORT || 3306,
 });
 
 db.connect((err) => {
@@ -14,7 +15,7 @@ db.connect((err) => {
     console.error("❌ Error al conectar con la base de datos:", err);
     return;
   }
-  console.log("✅ Conectado a la base de datos MySQL");
+  console.log("✅ Conectado correctamente a la base de datos MySQL");
 });
 
 export default db;
