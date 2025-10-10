@@ -1,21 +1,19 @@
-// db.js
-// db.js
-import mysql from "mysql2";
+const mysql = require('mysql2');
 
-const db = mysql.createConnection({
-  host: process.env.MYSQLHOST ||  "mysql.railway.internal",
-  user: process.env.MYSQLUSER ||  "root",
-  password: process.env.MYSQLPASSWORD || "JogTRBVozjGbMnPNOSxkBQbWjSpySKld",
-  database: process.env.MYSQLDATABASE ||  "railway",
-  port: process.env.MYSQLPORT ||  3306,
+const connection = mysql.createConnection({
+  host: process.env.MYSQLHOST || 'mysql.railway.internal',
+  user: process.env.MYSQLUSER || 'root',
+  password: process.env.MYSQLPASSWORD || 'JogTRBVozjGbMnPNOSxkBQbWjSpySKld',
+  database: process.env.MYSQLDATABASE || 'railway',
+  port: process.env.MYSQLPORT || 3306
 });
 
-db.connect((err) => {
+connection.connect((err) => {
   if (err) {
-    console.error("❌ Error al conectar con la base de datos:", err);
+    console.error('❌ Error conectando a MySQL:', err);
     return;
   }
-  console.log("✅ Conectado correctamente a la base de datos MySQL");
+  console.log('✅ Conectado correctamente a MySQL');
 });
 
-export default db;
+module.exports = connection;
