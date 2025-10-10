@@ -3,11 +3,11 @@
 import mysql from "mysql2";
 
 const db = mysql.createConnection({
-  host: process.env.MYSQLHOST || process.env.HOST || "mysql.railway.internal",
-  user: process.env.MYSQLUSER || process.env.USER || "root",
-  password: process.env.MYSQLPASSWORD || process.env.PASSWORD || "JogTRBVozjGbMnPNOSxkBQbWjSpySKld",
-  database: process.env.MYSQLDATABASE || process.env.DATABASE || "railway",
-  port: process.env.MYSQLPORT || process.env.PORT || 3306,
+  host: process.env.MYSQLHOST ||  "mysql.railway.internal",
+  user: process.env.MYSQLUSER ||  "root",
+  password: process.env.MYSQLPASSWORD || "JogTRBVozjGbMnPNOSxkBQbWjSpySKld",
+  database: process.env.MYSQLDATABASE ||  "railway",
+  port: process.env.MYSQLPORT ||  3306,
 });
 
 db.connect((err) => {
