@@ -2,31 +2,79 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Cliente</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro de Cliente</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 80px;
+      background: #f3f3f3;
+    }
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      display: inline-block;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, button {
+      display: block;
+      margin: 10px auto;
+      padding: 10px;
+      font-size: 16px;
+      width: 80%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #msg {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-  <h1>Registro de Cliente</h1>
-  <form id="formCliente">
-    <input type="text" id="nombre" placeholder="Nombre" required><br>
-    <input type="text" id="cedula" placeholder="Cédula" required><br>
-    <button type="submit">Enviar</button>
+  <h2>🧍 Registro de Cliente</h2>
+
+  <form id="formRegistro">
+    <input type="text" id="nombre" placeholder="Nombre completo" required />
+    <input type="text" id="cedula" placeholder="Cédula" required />
+    <button type="submit">Registrar</button>
   </form>
 
-  <script>
-    document.getElementById("formCliente").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const nombre = document.getElementById("nombre").value;
-      const cedula = document.getElementById("cedula").value;
+  <p id="msg"></p>
 
-      const res = await fetch("/api/registrar", {
+  <script>
+    document.getElementById("formRegistro").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const nombre = document.getElementById("nombre").value.trim();
+      const cedula = document.getElementById("cedula").value.trim();
+
+      const res = await fetch("/registro", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nombre, cedula })
       });
 
       const data = await res.json();
-      alert(data.mensaje);
-      e.target.reset();
+      const msg = document.getElementById("msg");
+      if (data.error) {
+        msg.textContent = "⚠️ " + data.error;
+        msg.style.color = "red";
+      } else {
+        msg.textContent = data.message;
+        msg.style.color = "green";
+        document.getElementById("formRegistro").reset();
+      }
     });
   </script>
 </body>
