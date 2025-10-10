@@ -1,30 +1,18 @@
-const btnCargar = document.getElementById("btnCargar");
-const tabla = document.getElementById("tablaUsuarios");
-const mensaje = document.getElementById("mensaje");
+const API_URL = "https://turnero-production.up.railway.app";
 
-const API_URL = window.location.origin;
+document.getElementById("btnCargar").addEventListener("click", async () => {
+  const res = await fetch(`${API_URL}/usuarios`);
+  const data = await res.json();
 
-btnCargar.addEventListener("click", async () => {
-  try {
-    const res = await fetch(`${API_URL}/usuarios`);
-    const data = await res.json();
+  const tabla = document.getElementById("tablaUsuarios");
+  tabla.innerHTML = "";
 
-    tabla.innerHTML = ""; // limpiar tabla
+  data.forEach((u) => {
+    const fila = `<tr><td>${u.id}</td><td>${u.nombre}</td><td>${u.email}</td></tr>`;
+    tabla.innerHTML += fila;
+  });
+});
 
-    if (data.length === 0) {
-      mensaje.textContent = "⚠️ No hay usuarios registrados aún.";
-      return;
-    }
-
-    data.forEach((user) => {
-      const fila = document.createElement("tr");
-      fila.innerHTML = `
-        <td>${user.id}</td>
-        <td>${user.nombre}</td>
-        <td>${user.email}</td>
-      `;
-      tabla.appendChild(fila);
-    });
 
     mensaje.textContent = "✅ Usuarios cargados correctamente.";
   } catch (error) {
