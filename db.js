@@ -1,23 +1,34 @@
-const mysql = require('mysql2');
+// db.js
+const mysql = require('mysql2/promise');
 
-// Pool de conexiones para mejor manejo de concurrencia
-const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'turnero_db',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
-
-pool.getConnection((err, connection) => {
-  if (err) {
-    console.error('❌ Error conectando a la BD:', err);
-  } else {
-    console.log('✅ Conectado a la base de datos MySQL (pool)');
-    connection.release();
+function getConfig() {
+  if (process.env.DATABASE_URL) {
+    const url = new URL(process.env.DATABASE_URL);
+    return {
+      host: url.hostname,
+      user: url.username,
+      password: url.password,
+      database: url.pathname.slice(1),
+      port: Number(url.port) || 3306,
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0
+    };
   }
-});
 
-module.exports = pool.promise();
+  // fallback: variables separadas
+  return {
+    host: process.env.DB_HOST || '127.0.0.1',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'test',
+    port: Number(process.env.DB_PORT) || 3306,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+  };
+}
+
+const pool = mysql.createPool(getConfig());
+
+module.exports = pool;
