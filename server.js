@@ -57,5 +57,16 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor ejecutándose en puerto ${PORT}`);
 });
+// Listar usuarios para el panel admin
+app.get("/usuarios", (req, res) => {
+  const sql = "SELECT id, nombre, email FROM usuarios";
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error("❌ Error al obtener usuarios:", err);
+      return res.status(500).json({ error: "Error al obtener usuarios" });
+    }
+    res.json(result);
+  });
+});
 
 
