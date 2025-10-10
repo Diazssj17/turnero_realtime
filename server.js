@@ -36,6 +36,18 @@ app.get("/usuarios", (req, res) => {
     }
     res.json(result);
   });
+  // Listar usuarios
+app.get("/usuarios", (req, res) => {
+  const sql = "SELECT id, nombre, email FROM usuarios";
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error("❌ Error al obtener usuarios:", err);
+      return res.status(500).json({ error: "Error al obtener usuarios" });
+    }
+    res.json(result);
+  });
+});
+
 });
 
 });
