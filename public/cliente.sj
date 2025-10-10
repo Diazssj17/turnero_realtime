@@ -1,4 +1,4 @@
-const API_URL = window.location.origin;
+const API_URL = "https://turnero-production.up.railway.app";
 
 document.getElementById("btnRegistrar").addEventListener("click", async () => {
   const nombre = document.getElementById("nombre").value;
@@ -10,17 +10,12 @@ document.getElementById("btnRegistrar").addEventListener("click", async () => {
     return;
   }
 
-  try {
-    const res = await fetch(`${API_URL}/registro`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nombre, email, password }),
-    });
+  const res = await fetch(`${API_URL}/registro`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ nombre, email, password }),
+  });
 
-    const data = await res.json();
-    alert(data.message || data.error);
-  } catch (error) {
-    alert("❌ Error al registrar usuario");
-  }
+  const data = await res.json();
+  alert(data.message || data.error);
 });
-
