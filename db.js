@@ -1,12 +1,19 @@
 const mysql = require('mysql2');
-require('dotenv').config();
 
-const pool = mysql.createPool({
-  host: process.env.MYSQLHOST || 'localhost',
+const connection = mysql.createConnection({
+  host: process.env.MYSQLHOST || 'mysql.railway.internal',
   user: process.env.MYSQLUSER || 'root',
-  password: process.env.MYSQLPASSWORD || '',
-  database: process.env.MYSQLDATABASE || 'turnero',
-  port: process.env.MYSQLPORT || 3306,
+  password: process.env.MYSQLPASSWORD || 'JogTRBVozjGbMnPNOSxkBQbWjSpySKld',
+  database: process.env.MYSQLDATABASE || 'railway',
+  port: process.env.MYSQLPORT || 3306
 });
 
-module.exports = pool;
+connection.connect((err) => {
+  if (err) {
+    console.error('❌ Error conectando a MySQL:', err);
+    return;
+  }
+  console.log('✅ Conectado correctamente a MySQL');
+});
+
+module.exports = connection;
