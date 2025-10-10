@@ -1,14 +1,16 @@
-// server.js
 import express from "express";
 import db from "./db.js";
 
 const app = express();
 app.use(express.json());
 
+// ✅ Servir archivos del frontend
+app.use(express.static("public"));
+
 // ✅ Ruta de prueba
 app.get("/", (req, res) => res.send("Servidor activo 🚀"));
 
-// ✅ Registro de usuario
+// ✅ Registro
 app.post("/registro", (req, res) => {
   const { nombre, email, password } = req.body;
 
@@ -24,6 +26,12 @@ app.post("/registro", (req, res) => {
     }
     res.json({ message: "✅ Usuario registrado correctamente" });
   });
+});
+
+// ✅ Puerto dinámico
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor ejecutándose en puerto ${PORT}`);
 });
 
 // ✅ Escuchar en el puerto asignado por Railway
