@@ -1,6 +1,7 @@
+// db.js
 import mysql from "mysql2";
 
-const connection = mysql.createConnection({
+const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -9,12 +10,12 @@ const connection = mysql.createConnection({
   connectTimeout: 10000
 });
 
-connection.connect(err => {
+db.connect((err) => {
   if (err) {
     console.error("❌ Error al conectar con la base de datos:", err);
-    return;
+  } else {
+    console.log("✅ Conectado correctamente a la base de datos MySQL");
   }
-  console.log("✅ Conectado a la base de datos MySQL");
 });
 
-export default connection;
+export default db;
