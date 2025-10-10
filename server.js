@@ -26,6 +26,18 @@ app.post("/registro", (req, res) => {
     }
     res.json({ message: "✅ Usuario registrado correctamente" });
   });
+  // Obtener lista de usuarios (solo para admin)
+app.get("/usuarios", (req, res) => {
+  const sql = "SELECT id, nombre, email FROM usuarios";
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error("❌ Error en /usuarios:", err);
+      return res.status(500).json({ error: "Error al obtener usuarios" });
+    }
+    res.json(result);
+  });
+});
+
 });
 
 // ✅ Puerto dinámico
